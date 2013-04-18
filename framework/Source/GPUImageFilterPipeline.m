@@ -1,4 +1,5 @@
 #import "GPUImageFilterPipeline.h"
+#import "GPUImageFilterGroup.h"
 
 @interface GPUImageFilterPipeline ()
 
@@ -185,13 +186,17 @@
     
     for (int i = 0; i < [self.filters count]; i++) {
         theFilter = [self.filters objectAtIndex:i];
-        [prevFilter removeAllTargets];
+        if (![prevFilter isKindOfClass:[GPUImageFilterGroup class]]) {
+            [prevFilter removeAllTargets];
+        }
         [prevFilter addTarget:theFilter];
         prevFilter = theFilter;
     }
-    
-    [prevFilter removeAllTargets];
-    
+  
+    if (![prevFilter isKindOfClass:[GPUImageFilterGroup class]]) {
+        [prevFilter removeAllTargets];
+    }
+  
     if (self.output != nil) {
         [prevFilter addTarget:self.output];
     }
